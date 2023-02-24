@@ -10,22 +10,91 @@
   ## deleted the following attibutes not relevant to the exploration I decided on
     ## "conf_case", "prob_case", "pnew_case", "conf_death", "prob_death", "pnew_death", "created_at",	"consent_cases", "consent_deaths";
   ## left with the following attributes
-    ## "submission_date", "state",	"tot_cases", "new_case",	"tot_death",	"new_death";
+    ## "date", "state",	"total_cases", "new_cases",	"total_deaths",	"new_deaths";
 
-## Filtered the "states" column and decided not to include/delete:
-  ## "GU" (Guam)
-  ## "FSM" (Federated States of Micronesia)
-  ## "RMI" (Republic of the Marshall Islands)
-  ## "PW" (Palau)
-  ## "PR" (Puerto Rico)
-  ## "MP" (Northern Mariana Islands)
+## Filtered the "states" column and noticed several American territories I will not include during analysis. I will filter out in PostgreSQL
+ 
 ## Decided to leave in "DC" (District of Columbia)
+## New York State "NY" and New York City "NYC" are counted separately.
+  ## Will update "NYC" as "NY" and combine the additional "NY" information on the 'submission_date' column in PostgreSQL
 
 ## Filtered "new_case" and found 27 occurences of a negative case count
   ## researched the orginal documentation on the dataset and found a reference to adjustments made to "new_case" counts as well as "new_death" counts
   ## chose to leave them in the data set to not cause discepencies during queries
   ## will remove obvious outliers during any visualizations
 
-## confirmed no "blanks"
+## Confirmed no "blanks"
 
-## cleared all filters and 'saved as' "united_states_covid"
+## Formatted columns new_cases, total_cases, new_deaths, and total_deaths as a Number with no comma separator and no decimal places
+
+## Final filter by 'date' and saved as' "us_covid.csv"
+
+## Created a table in SQL and uploaded CSV
+CREATE TABLE us_covid (
+  date DATE,
+  state VARCHAR(50),
+  new_cases BIGINT,
+  total_cases BIGINT,
+  new_deaths BIGINT,
+  total_deaths BIGINT
+);
+
+## Confirmed successful upload
+  SELECT *
+  FROM US_COVID
+  ORDER BY date DESC
+  LIMIT 100;
+  
+## Additional exploration and cleaning of the data
+  SELECT DISTINCT STATE
+  FROM US_COVID;
+    Returned 60 rows
+
+## Deleting all of the American territories
+  DELETE
+  FROM US_COVID
+  WHERE STATE IN ('GU','FSM','RMI','MP','VI','PR','AS','PW');
+ 
+## "NYC" AND "NY" are still separated
+  UPDATE US_COVID
+  SET STATE = 'NY'
+  WHERE STATE = 'NYC';
+
+## Updating the table to combine the additional "NY" in the state column on the 'date' column
+   and producing a table with the final 50 states and the District of columbia grouping by the
+   date and state column in desceding order by date and then total deaths.
+   
+   WITH CTE AS
+	  (SELECT date
+	 		,state
+	 		,SUM(TOTAL_DEATHS) AS TOTAL_DEATH_SUM
+			,SUM(NEW_DEATHS) AS NEW_DEATHS_SUM
+			,SUM(TOTAL_CASES) AS TOTAL_CASES_SUM
+			,SUM(NEW_CASES) AS NEW_CASES_SUM
+		FROM US_COVID
+		--WHERE STATE = 'NY'
+		GROUP BY 
+         state
+	 			,date)
+SELECT 
+   date
+	,state
+	,TOTAL_DEATH_SUM AS TOTAL_DEATHS
+	,NEW_DEATHS_SUM AS NEW_DEATHS
+	,TOTAL_CASES_SUM AS TOTAL_CASES
+	,NEW_CASES_SUM AS NEW_CASES
+FROM CTE
+GROUP BY 
+     date
+		,state
+		,TOTAL_DEATH_SUM
+		,NEW_DEATHS_SUM
+		,TOTAL_CASES_SUM
+		,NEW_CASES_SUM
+ORDER BY 
+     date desc
+		,total_deaths desc;
+    
+
+
+
