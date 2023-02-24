@@ -1,0 +1,31 @@
+## downloaded a dataset/csv from the CDC containing information on United States Covid Numbers
+
+## 'https://data.cdc.gov/Case-Surveillance/United-States-COVID-19-Cases-and-Deaths-by-State-o/9mfq-cb36/data'
+
+## date range for the dataset - 20200120 - 20221018
+
+## imported the dataset into Excel and reviewed
+
+## filtered and ordered by multiple attributes to better understand
+  ## deleted the following attibutes not relevant to the exploration I decided on
+    ## "conf_case", "prob_case", "pnew_case", "conf_death", "prob_death", "pnew_death", "created_at",	"consent_cases", "consent_deaths";
+  ## left with the following attributes
+    ## "submission_date", "state",	"tot_cases", "new_case",	"tot_death",	"new_death";
+
+## Filtered the "states" column and decided not to include/delete:
+  ## "GU" (Guam)
+  ## "FSM" (Federated States of Micronesia)
+  ## "RMI" (Republic of the Marshall Islands)
+  ## "PW" (Palau)
+  ## "PR" (Puerto Rico)
+  ## "MP" (Northern Mariana Islands)
+## Decided to leave in "DC" (District of Columbia)
+
+## Filtered "new_case" and found 27 occurences of a negative case count
+  ## researched the orginal documentation on the dataset and found a reference to adjustments made to "new_case" counts as well as "new_death" counts
+  ## chose to leave them in the data set to not cause discepencies during queries
+  ## will remove obvious outliers during any visualizations
+
+## confirmed no "blanks"
+
+## cleared all filters and 'saved as' "united_states_covid"
