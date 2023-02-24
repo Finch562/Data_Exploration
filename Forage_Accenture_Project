@@ -1,0 +1,74 @@
+Accenture Social Buzz Content Analysis:
+
+An analysis of their content categories that highlights the top 5 categories with the largest aggregate popularity
+
+
+My Cleaned Dataset: 
+https://docs.google.com/spreadsheets/d/1uQdrVHL-20DiPDKcvKavPBrANzT5cQwb/edit?usp=sharing&ouid=107980549449221001987&rtpof=true&sd=true
+
+Documenting the process and steps I took:
+
+Datasets:
+
+•	‘Content’ - CSV
+  •	We trust the data source from Social Buzz and do not feel the need to verify the “Type” or “Category” of the data against the URL source. *URL column     deleted*
+  •	“Type” Column Clean
+  •	“Category Column”
+    •	Roughly half of the descriptions have quotes(“”) around them. “Find and replace” was used in Excel to remove the quotes(“”) from the entire column.       *34 changes were made*
+    •	A significant number of rows were capitalized while the rest were not.
+      Formula “=LOWER(E1)” was used to copy the column over in all lower case. The column was then copied and pasted with values only. Original column        was deleted.
+    •	“USER ID” column was deleted as we will not be do an in-depth analysis on which users liked what type of content at this time.
+
+•	‘Reactions’ - CSV
+   • The “Type” column had 981 “Blanks”. Because we are looking for the most popular content by type, these incomplete rows were not useful and deleted.
+   • A remaining 2039 “User ID”s were missing – we determined that should not affect the reaction type data, so the missing “User ID”s were kept.
+   • After further review of our objective, the “USER ID” column was deleted as we will not be doing an in-depth analysis on which users liked what type      of content at this time.
+   
+•	‘Reaction Types’ - CSV
+   • No errors found. Reaction types matched the list of types from the “Reaction” table.
+
+•	We are left with the following datasets to work with:
+  •	'Reactions'
+    	Content ID
+    	Type
+      Datetime
+    
+  •	'Content'
+	    Content ID
+	    Content Type
+	    Category
+      
+	• 'ReactionType'
+      Type
+      Sentiment
+      Score
+
+I combined the 'Content' and 'ReactionType' datasets with the 'Reactions' dataset in Excel.
+
+Using XLOOKUP to create a single sheet/dataset with the all of the information we need for the analysis.
+  •	Importing the Content Type data from the Content dataset
+    '=XLOOKUP(B1,Content!B:B,Content!C:C,Content!C:C,0)’
+  •	Importing the Category data from the Content dataset
+    ‘=XLOOKUP(B1,Content!B:B,Content!D:D,Content!D:D,0)’
+  •	Importing the Category data from the Content dataset
+    ‘=XLOOKUP(C2,ReactionType!B:B,ReactionType!D:D,ReactionType!B:B,0)’
+
+
+Copied each column and pasted values only to remove the formulas.
+
+
+Determining the top 5 Categories.
+  •	Created a “Categories” column in column H
+  • Extracted the distinct categories from row F and input them starting at H2
+    '=INDEX($F$2:$F$24574,MATCH(0,COUNTIF($H$1:H1,$F$2:$F$24574),0))'
+
+•	Created a “Total Score” Column in row I
+    'Summed the score column based on the new “Categories” column and the “Category” column
+    '=SUMIFS(G:G,F:F,@H:H)'
+
+•	Applied a filter to the “Categories” and “Total Score” column and sorted based on the “Total Score” column in descending order
+
+•	Created a “Top 5 Categories” column. Copied and pasted the top 5 results from the “Categories” column.
+
+***Decided it would be a much cleaner document by moving the new columns to their own sheet***
+
