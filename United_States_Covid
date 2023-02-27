@@ -2,15 +2,15 @@
 
 ## 'https://data.cdc.gov/Case-Surveillance/United-States-COVID-19-Cases-and-Deaths-by-State-o/9mfq-cb36/data'
 
-## date range for the dataset - 20200120 - 20221018
+## date range for the dataset - 2020-01-20 - 2022-10-18
 
-## imported the dataset into Excel and reviewed
+## Imported the dataset into Excel and reviewed
 
-## filtered and ordered by multiple attributes to better understand
-  ## deleted the following attibutes not relevant to the exploration I decided on
+## Filtered and ordered by multiple attributes to better understand
+  ## Feleted the following attibutes not relevant to the exploration I decided on
     ## "conf_case", "prob_case", "pnew_case", "conf_death", "prob_death", "pnew_death", "created_at",	"consent_cases", "consent_deaths";
   ## left with the following attributes
-    ## "date", "state",	"total_cases", "new_cases",	"total_deaths",	"new_deaths";
+    ## "date", "state",	"total_cases", "new_cases","total_deaths","new_deaths";
 
 ## Filtered the "states" column and noticed several American territories I will not include during analysis. I will filter out in PostgreSQL
  
@@ -64,37 +64,31 @@ CREATE TABLE us_covid (
    and producing a table with the final 50 states and the District of columbia grouping by the
    date and state column in desceding order by date and then total deaths.
    
-   WITH CTE AS
-	  (SELECT date
+  WITH CTE AS
+	(SELECT date
 	 		,state
 	 		,SUM(TOTAL_DEATHS) AS TOTAL_DEATH_SUM
 			,SUM(NEW_DEATHS) AS NEW_DEATHS_SUM
 			,SUM(TOTAL_CASES) AS TOTAL_CASES_SUM
 			,SUM(NEW_CASES) AS NEW_CASES_SUM
 		FROM US_COVID
-		--WHERE STATE = 'NY'
-		GROUP BY 
-         state
-	 			,date)
-SELECT 
-   date
+/*      WHERE STATE = 'NY' *a check to confirm total_deaths matched 
+	 	excel 'NY' and 'NYC' total deaths when combined (71577)
+*/
+	GROUP BY state
+    		,date)
+SELECT date
 	,state
 	,TOTAL_DEATH_SUM AS TOTAL_DEATHS
 	,NEW_DEATHS_SUM AS NEW_DEATHS
 	,TOTAL_CASES_SUM AS TOTAL_CASES
 	,NEW_CASES_SUM AS NEW_CASES
 FROM CTE
-GROUP BY 
-     date
+GROUP BY date
 		,state
 		,TOTAL_DEATH_SUM
 		,NEW_DEATHS_SUM
 		,TOTAL_CASES_SUM
 		,NEW_CASES_SUM
-ORDER BY 
-     date desc
+ORDER BY date desc
 		,total_deaths desc;
-    
-
-
-
