@@ -1,4 +1,4 @@
-Hello there, fellow data enthusiasts and curious onlookers!
+Hello fellow data enthusiasts and curious onlookers!
 
 Welcome to my GitHub repository where I'll be documenting my data analytics journey. Why am I doing this, you ask? Well, let's just say I want to make sure I have something to look back on when I'm old and gray, reminiscing about the good ol' days when I was a data cleaning wizard (hopefully without the beard and pointy hat). Plus, I figured it's a great way to show off my skills to potential employers, or at least prove that I'm not just binge-watching Netflix all day.
 
